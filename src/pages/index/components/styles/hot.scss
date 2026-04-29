@@ -1,0 +1,60 @@
+/* 热门推荐 */
+.panel {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 508rpx;
+    margin: 20rpx 20rpx 0;
+    border-radius: 10rpx;
+    background-color: #fff;
+  
+  .title {
+    height: 60rpx;
+    line-height: 60rpx;
+    color: #333;
+    font-size: 28rpx;
+    border-bottom: 1rpx solid #f7f7f8;
+    .more {
+      float: right;
+      padding-left: 20rpx;
+      font-size: 24rpx;
+      color: #999;
+    }
+  }
+  .more {
+    &::after {
+      font-family: 'erabbit' !important;
+      content: '\e6c2';
+    }
+  }
+  .section {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20rpx 0;
+    .product {
+      width: 220rpx;
+      margin: 0rpx 25rpx 20rpx 0;
+      &:nth-child(3n) {
+        margin-right: 0;
+      }
+      .image {
+        width: 220rpx;
+        height: 220rpx;
+      }
+      .name {
+        padding: 5rpx;
+        font-size: 22rpx;
+        color: #333;
+      }
+      .price {
+        padding: 5rpx;
+        font-size: 18rpx;
+        color: #cf4444;
+      }
+      .number {
+        font-size: 24rpx;
+        margin-left: 2rpx;
+      }
+    }
+  }
+}
