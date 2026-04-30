@@ -92,3 +92,14 @@ export const http = <T>(options: UniApp.RequestOptions) => {
     })
   })
 }
+
+/* 
+模拟DataResult 结果
+*/
+export const mockDataResult = <T>(code: string, msg: string, result: T) : DataResult<T> => {
+  return {
+    code: code,
+    msg: msg,
+    result: result
+  }
+}

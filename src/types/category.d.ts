@@ -20,3 +20,6 @@ export type CategoryProducts = {
     /** 一级分类商品 */
     products: ProductDetail[]
 }
+
+/** 分类商品列表 */
+export type CategoryProductListParams = PageParams & { categoryId: string }

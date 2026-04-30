@@ -4,12 +4,14 @@
     <!-- 自定义导航栏 -->
     <pet-nav-bar />
     <!-- 滚动容器 -->
-    <scroll-view 
+    <scroll-view
       class="scroll-view"
-      scroll-y>
+      scroll-y
+      @scrolltolower="onScrollToLower"
+    >
         <template>
           <MySwiper :list="bannerList"/>
-          <HotPannel :list="hotList"/>
+          <HotPannel :list="hotList" :is-loading="isLoadingMore" :is-finish="isFinish" />
         </template>
     </scroll-view>
     <PetShopCart/>
@@ -17,136 +19,69 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+import { onLoad } from '@dcloudio/uni-app'
 import MySwiper from './components/MySwiper.vue';
 import type { BannerItem, HotItem } from '@/types/home';
-import type { ProductItem } from '@/types/global';
-import { ref } from 'vue';
 import HotPannel from './components/HotPannel.vue';
 import PetNavBar from '@/components/PetNavBar.vue';
 import PetShopCart from '@/components/PetShopCart.vue';
-import CartControl from '@/components/CartControl.vue';
-import type { CartItem } from '@/types/cart';
-const bannerList = ref<BannerItem[]>([
-  { hrefUrl: "", id: "", imgUrl: "/static/images/banner-new.png", type: 1 },
-  { hrefUrl: "", id: "", imgUrl: "/static/images/banner-new.png", type: 1 },
-  { hrefUrl: "", id: "", imgUrl: "/static/images/banner-new.png", type: 1 },
-])
+import { getHomeBannerAPI, getHomeHotAPI } from '@/services/home'
 
-const productImages = ['/static/images/product-s1.png', '/static/images/product-s2.png', '/static/images/product-s3.png']
-const randomImage = () => productImages[Math.floor(Math.random() * productImages.length)]
+// 获取轮播图数据
+const bannerList = ref<BannerItem[]>([])
+const getHomeBannerData = async () => {
+  const res = await getHomeBannerAPI()
+  bannerList.value = res.result
+}
 
-// 获取热门推荐数据
-const hotList = ref<ProductItem[]>([
-  {
-    id: 'aabbbb',
-    name: '好命天生木薯混合猫砂除臭强2.5Kg/袋',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
-  },
-  {
-    id: 'aabbbb',
-    name: '尼可露豆腐猫砂6L/袋原味膨润土除臭猫砂',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
-  },
-  {
-    id: 'aabbbb',
-    name: '尼可露豆腐猫砂6L/袋原味膨润土除臭猫砂',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
-  },
-  {
-    id: 'aabbbb',
-    name: '鲜朗低温烘培木薯猫砂',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
-  },
-  {
-    id: 'aabbbb',
-    name: '鲜朗低温烘培幼猫猫粮',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
-  },
-  {
-    id: 'aabbbb',
-    name: '好命天生经典膨润土猫砂',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
-  },
-  {
-    id: 'aabbbb',
-    name: '鲜朗低温烘培幼猫猫粮',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
-  },
-  {
-    id: 'aabbbb',
-    name: '好命天生经典膨润土猫砂',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
-  },
-  {
-    id: 'aabbbb',
-    name: '尼可露豆腐猫砂6L/袋原味膨润土除臭猫砂',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
+// 获取热门推荐数据（分页）
+const hotList = ref<HotItem[]>([])
+const hotPage = ref(1)
+const isLoadingMore = ref(false)
+const isFinish = ref(false)
+const pageSize = 6
+
+const getHomeHotData = async () => {
+  if (isLoadingMore.value || isFinish.value) return
+  isLoadingMore.value = true
+  const res = await getHomeHotAPI({ page: hotPage.value, pageSize })
+  isLoadingMore.value = false
+  hotList.value = [...hotList.value, ...res.result.items]
+  if (hotPage.value < res.result.pages) {
+    hotPage.value++
+  } else {
+    isFinish.value = true
   }
-  ,
-  {
-    id: 'aabbbb',
-    name: '热门推荐1',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
-  },
-  {
-    id: 'aabbbb',
-    name: '热门推荐1',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
-  },
-  {
-    id: 'aabbbb',
-    name: '热门推荐1',
-    price: 100,
-    picture: randomImage(),
-    discount: 0.80,
-    orderNum: 10,
-    desc: '者是商品描述'
-  }
-])
+}
+
+const onScrollToLower = () => {
+  getHomeHotData()
+}
+
+// 页面加载
+const isLoading = ref(false)
+onLoad(async () => {
+  isLoading.value = true
+  await Promise.all([getHomeBannerData(), getHomeHotData()])
+  isLoading.value = false
+})
+
+// 当前下拉刷新状态
+const isTriggered = ref(false)
+
+// 自定义下拉刷新被触发
+const onRefresherrefresh = async () => {
+  isTriggered.value = true
+  hotPage.value = 1
+  hotList.value = []
+  isFinish.value = false
+  await Promise.all([
+    getHomeBannerData(),
+    getHomeHotData(),
+  ])
+  isTriggered.value = false
+}
 
 </script>
 

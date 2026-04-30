@@ -20,45 +20,37 @@
         </view>
       </scroll-view>
       <!-- 右侧：分类商品 -->
-      <scroll-view enable-back-to-top class="productList" scroll-y>
-        <!-- 内容区域 -->
-        <view class="panel" v-for="[categoryId, products] in categoryProductListMap" :key="categoryId">
-					<view class="productItem" v-for="product in products" :key="product.id">
-						<image class="productImg" :src="product.picture"></image>
-						<view class="productInfo">
-							<view class="productName">{{product.name}}</view>
-							<view class="productAttr">{{ product.desc }}</view>
-							<view class="productImportBox">
-								<view class="productPrice">
-									<text class="nowPrice">优惠价￥{{product.price}}</text>
-								</view>
-                <view>
-                  <text class="oldPrice">￥{{product.oldPrice}}</text>
-                  <cartcontrol :product="{...product.skus[0], count: 0}"></cartcontrol>
-                </view>
-							</view>
-						</view>
-					</view>
-				</view>
-
-        <!-- <view class="panel" v-for="[categoryId, products] in categoryProductListMap" :key="categoryId">
-          <view class="section">
+      <scroll-view enable-back-to-top class="productList" scroll-y @scrolltolower="getCategoryProductsData">
+        <view class="productListContent">
+          <!-- 分类商品列表区域 -->
+          <view class="panel" :key="activeCategory">
             <navigator
-              v-for="product in products"
+              v-for="product in productList"
               :key="product.id"
-              class="goods"
+              class="productItem"
               hover-class="none"
-              :url="`/pages/goods/goods?id=${product.id}`"
+              :url="`/pages/product/product?id=${product.id}`"
             >
-              <image class="image" :src="product.picture"></image>
-              <view class="name ellipsis">{{ product.name }}</view>
-              <view class="price">
-                <text class="symbol">¥</text>
-                <text class="number">{{ product.price }}</text>
+              <image class="productImg" :src="product.picture"></image>
+              <view class="productInfo">
+                <view class="productName">{{product.name}}</view>
+                <view class="productAttr">{{ product.desc }}</view>
+                <view class="productImportBox">
+                  <view class="productPrice">
+                    <text class="nowPrice">优惠价￥{{product.price}}</text>
+                  </view>
+                  <view>
+                    <text class="oldPrice">￥{{product.oldPrice}}</text>
+                    <cartcontrol :product="{...product.skus[0], count: 0}"></cartcontrol>
+                  </view>
+                </view>
               </view>
             </navigator>
           </view>
-        </view> -->
+          <view class="loading-text" v-if="isFinish || isLoading">
+            {{ isFinish ? '没有更多了哟...' : '数据正在加载中...' }}
+          </view>
+        </view>
       </scroll-view>
     </view>
   <PetShopCart/>
@@ -66,135 +58,84 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { onLoad, onShow, onHide, onReady, onUnload } from '@dcloudio/uni-app'
 import type { CategoryItem } from '@/types/category'
-import type {ProductDetail} from '@/types/product'
+import type { ProductDetail } from '@/types/product'
 import PetNavBar from '@/components/PetNavBar.vue';
 import cartcontrol from '@/components/CartControl.vue'
-
+import { getCategoryListAPI, getProductsByCategoryIdAPI } from '@/services/category'
 
 // 获取分类列表数据
-const categoryList = ref<CategoryItem[]>([
-  {
-    id: '1',
-    name: '品质猫砂',
-    picture: ""
-  },
-  {
-    id: '2',
-    name: '品牌猫粮',
-    picture: ""
-  },
-  {
-    id: '3',
-    name: '品牌狗粮',
-    picture: ""
-  },
-  {
-    id: '4',
-    name: '猫咪零食',
-    picture: ""
-  },
-  {
-    id: '5',
-    name: '狗狗零食',
-    picture: ""
-  },
-  {
-    id: '6',
-    name: '猫咪玩具',
-    picture: ""
-  },
-  {
-    id: '7',
-    name: '狗狗玩具',
-    picture: ""
+const categoryList = ref<CategoryItem[]>([])
+const activeCategory = ref('')
+
+const getCategoryList = async () => {
+  const res = await getCategoryListAPI()
+  categoryList.value = res.result
+  if (!activeCategory.value && res.result.length > 0) {
+    activeCategory.value = res.result[0].id
   }
-])
+}
 
-const productImages = ['/static/images/product-s1.png', '/static/images/product-s2.png', '/static/images/product-s3.png']
-const randomImage = () => productImages[Math.floor(Math.random() * productImages.length)]
+// 获取商品列表
+const productList = ref<ProductDetail[]>([])
+const isLoading = ref(false)
+const isFinish = ref(false)
+const isTriggered = ref(false)
 
-//获取分类商品列表数据
-const categoryProductListMap = ref<Map<string, ProductDetail[]>>(new Map())
-categoryList.value.forEach(category => categoryProductListMap.value.set(category.id, [
-  {
-    id: "aaa",
-    name: "尼可露豆腐猫砂6L/袋原味膨润土除臭猫砂",
-    desc: "商品简单描述",
-    price: 24.8,
-    oldPrice: 28,
-    details: "这是一个商品",
-    picture: randomImage(),
-    mainPictures: [],
-    skus:[
-      {
-        id: "sku1",
-        inventory: 100,
-        oldPrice: 28,
-        price: 24.8,
-        picture: randomImage(),
-        skuCode: "s001",
-        specs: []
-      }
-    ],
-    specs: []
-  },
-  {
-    id: "aaa",
-    name: "好命天生木薯混合猫砂除臭强2.5Kg/袋",
-    desc: "商品简单描述",
-    price: 17.8,
-    oldPrice: 20,
-    details: "这是一个商品",
-    picture: randomImage(),
-    mainPictures: [],
-    skus:[
-      {
-        id: "sku1",
-        inventory: 200,
-        oldPrice: 20,
-        price: 17.8,
-        picture: randomImage(),
-        skuCode: "s001",
-        specs: []
-      }
-    ],
-    specs: []
-  },
-  {
-    id: "aaa",
-    name: "好命天生木薯混合猫砂除臭强2.5Kg/袋",
-    desc: "商品简单描述",
-    price: 17.8,
-    oldPrice: 20,
-    details: "这是一个商品",
-    picture: randomImage(),
-    mainPictures: [],
-    skus:[
-      {
-        id: "sku1",
-        inventory: 200,
-        oldPrice: 20,
-        price: 17.8,
-        picture: randomImage(),
-        skuCode: "s001",
-        specs: []
-      }
-    ],
-    specs: []
+// 分页参数
+const page = ref(1)
+const pageSize = 5
+
+const getCategoryProductsData = async () => {
+  if (isLoading.value) return
+  if (isFinish.value) {
+    return uni.showToast({ icon: 'none', title: '没有更多数据~' })
   }
-]))
+  isLoading.value = true
+  const res = await getProductsByCategoryIdAPI({
+    id: activeCategory.value,
+    page: page.value,
+    pageSize,
+  })
+  isLoading.value = false
+  productList.value = [...productList.value, ...res.result.items]
+  if (page.value < res.result.pages) {
+    page.value++
+  } else {
+    isFinish.value = true
+  }
+}
 
-// 当前分类页面
-const activeCategory = ref("")
-if(categoryList.value.length > 0) {
-  activeCategory.value = categoryList.value[0].id
+// 监听分类切换，重置并重新请求
+watch(
+  () => activeCategory.value,
+  () => {
+    page.value = 1
+    productList.value = []
+    isFinish.value = false
+    getCategoryProductsData()
+  },
+)
+
+// 页面加载
+onReady(async () => {
+  await getCategoryList()
+  // getCategoryList 中会设置 activeCategory，watch 自动触发 getCategoryProductsData
+})
+
+// 自定义下拉刷新
+const onRefresherrefresh = async () => {
+  isTriggered.value = true
+  page.value = 1
+  productList.value = []
+  isFinish.value = false
+  await getCategoryProductsData()
+  isTriggered.value = false
 }
 
 onLoad(() => {})
-onReady(() => {})
 onShow(() => {})
 onHide(() => {})
 onUnload(() => {})

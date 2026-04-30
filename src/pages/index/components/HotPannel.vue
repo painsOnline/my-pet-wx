@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type { ProductItem } from '@/types/global'
+import type { ProductDetail } from '@/types/product'
 
-// 定义 props 接收数据
 defineProps<{
-  list: ProductItem[]
+  list: ProductDetail[]
+  isFinish?: boolean
+  isLoading?: boolean
 }>()
 </script>
 
@@ -18,16 +19,20 @@ defineProps<{
         v-for="product in list"
         :key="product.id"
         class="product"
+        open-type="navigate"
         hover-class="none"
-        :url="`/pages/products/product?id=${product.id}`"
+        :url="`pages/product/product?id=${product.id}`"
       >
-        <image class="image" src="/static/images/product.png"></image>
+        <image class="image" :src="product.picture"></image>
         <view class="name ellipsis">{{ product.name }}</view>
         <view class="price">
           <text class="symbol">¥</text>
           <text class="number">{{ product.price }}</text>
         </view>
       </navigator>
+    </view>
+    <view class="loading-text" v-if="isFinish || isLoading">
+      {{ isFinish ? '没有更多数据哟...' : '数据正在加载中...' }}
     </view>
   </view>
 </template>

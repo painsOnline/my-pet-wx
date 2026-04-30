@@ -56,6 +56,13 @@ page {
 /* 二级分类 */
 .productList {
   background-color: #fff;
+
+  .productListContent {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
   .carousel {
     height: 200rpx;
     margin: 0 30rpx 20rpx;
@@ -118,5 +125,13 @@ page {
 		color: #6a7076;
 		/* 中间划线 */
 		text-decoration: line-through;
+	}
+
+	.loading-text {
+		padding: 30rpx 0;
+		text-align: center;
+		font-size: 24rpx;
+		color: #bbb;
+		margin-top: auto;
 	}
 }
