@@ -62,6 +62,25 @@
 					}
 				}
 			]
+		},
+		{
+			"root": "pagesMember",
+			"pages": [
+				{
+					"path": "address/address",
+					"style": {
+						"navigationBarTitleText": "地址管理",
+						"navigationBarTextStyle": "white"
+					}
+				},
+				{
+					"path": "address-form/address-form",
+					"style": {
+						"navigationBarTitleText": "编辑地址",
+						"navigationBarTextStyle": "white"
+					}
+				}
+			]
 		}
 	]
 }

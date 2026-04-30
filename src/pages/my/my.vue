@@ -70,7 +70,7 @@
         <text>收藏</text>
       </navigator>
       <navigator
-        url="/pages/order?type=delivery"
+        url="/pagesMember/address/address"
         open-type="navigate"
         hover-class="none"
         class="myOrderNavItem"

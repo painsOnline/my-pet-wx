@@ -59,6 +59,12 @@ importers:
       '@dcloudio/uni-ui':
         specifier: ^1.5.12
         version: 1.5.12
+      pinia:
+        specifier: ^2.1.7
+        version: 2.3.1(typescript@4.9.5)(vue@3.5.33(typescript@4.9.5))
+      pinia-plugin-persistedstate:
+        specifier: ^3.2.1
+        version: 3.2.3(pinia@2.3.1(typescript@4.9.5)(vue@3.5.33(typescript@4.9.5)))
       vue:
         specifier: ^3.4.21
         version: 3.5.33(typescript@4.9.5)
@@ -3046,6 +3052,20 @@ packages:
     resolution: {integrity: sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==}
     engines: {node: '>=0.10.0'}
 
+  pinia-plugin-persistedstate@3.2.3:
+    resolution: {integrity: sha512-Cm819WBj/s5K5DGw55EwbXDtx+EZzM0YR5AZbq9XE3u0xvXwvX2JnWoFpWIcdzISBHqy9H1UiSIUmXyXqWsQRQ==}
+    peerDependencies:
+      pinia: ^2.0.0
+
+  pinia@2.3.1:
+    resolution: {integrity: sha512-khUlZSwt9xXCaTbbxFYBKDc/bWAGWJjOgvxETwkTN7KRm66EeT1ZdZj6i2ceh9sP2Pzqsbc704r2yngBrxBVug==}
+    peerDependencies:
+      typescript: '>=4.4.4'
+      vue: ^2.7.0 || ^3.5.11
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   pirates@4.0.7:
     resolution: {integrity: sha512-TfySrs/5nm8fQJDcBDuUng3VOUKsd7S+zqvbOTiGXHfxX4wK31ard+hoNuvkicM/2YFzlpDgABOevKSsB4G/FA==}
     engines: {node: '>= 6'}
@@ -3620,6 +3640,17 @@ packages:
       sugarss:
         optional: true
       terser:
+        optional: true
+
+  vue-demi@0.14.10:
+    resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
+    engines: {node: '>=12'}
+    hasBin: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
         optional: true
 
   vue-i18n@9.14.5:
@@ -7722,6 +7753,20 @@ snapshots:
 
   pify@2.3.0: {}
 
+  pinia-plugin-persistedstate@3.2.3(pinia@2.3.1(typescript@4.9.5)(vue@3.5.33(typescript@4.9.5))):
+    dependencies:
+      pinia: 2.3.1(typescript@4.9.5)(vue@3.5.33(typescript@4.9.5))
+
+  pinia@2.3.1(typescript@4.9.5)(vue@3.5.33(typescript@4.9.5)):
+    dependencies:
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.33(typescript@4.9.5)
+      vue-demi: 0.14.10(vue@3.5.33(typescript@4.9.5))
+    optionalDependencies:
+      typescript: 4.9.5
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+
   pirates@4.0.7: {}
 
   pixelmatch@4.0.2:
@@ -8313,6 +8358,10 @@ snapshots:
       fsevents: 2.3.3
       sass: 1.99.0
       terser: 5.46.2
+
+  vue-demi@0.14.10(vue@3.5.33(typescript@4.9.5)):
+    dependencies:
+      vue: 3.5.33(typescript@4.9.5)
 
   vue-i18n@9.14.5(vue@3.5.33(typescript@4.9.5)):
     dependencies:
