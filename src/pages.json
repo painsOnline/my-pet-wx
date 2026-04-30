@@ -67,6 +67,13 @@
 						"navigationBarTitleText": "我的订单",
 						"navigationBarTextStyle": "white"
 					}
+				},
+				{
+					"path": "create/create",
+					"style": {
+						"navigationBarTitleText": "订单创建",
+						"navigationBarTextStyle": "white"
+					}
 				}
 			]
 		},
