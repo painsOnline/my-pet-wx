@@ -110,14 +110,13 @@ export const getHomeHotAPI = async (data: HotListParams = {}) => {
   const page = data.page ?? 1
   const pageSize = data.pageSize ?? 6
 
-  // 随机 2~4 页
+  // 随机 2~4 页，每页实际条数随机波动
   const totalPages = randInt(2, 4)
-  const fullPageSize = pageSize
-  const lastPageSize = randInt(pageSize - 3, pageSize)
-  const totalCount = (totalPages - 1) * fullPageSize + lastPageSize
+  // 为每一页随机生成本页条数
+  const pageSizes = Array.from({ length: totalPages }, () => randInt(pageSize - 2, pageSize))
+  const totalCount = pageSizes.reduce((sum, s) => sum + s, 0)
 
-  const isLastPage = page >= totalPages
-  const actualSize = isLastPage ? totalCount - (totalPages - 1) * fullPageSize : fullPageSize
+  const actualSize = pageSizes[page - 1] ?? randInt(pageSize - 2, pageSize)
 
   const items = Array.from({ length: Math.max(actualSize, 0) }, () => createMockProduct())
 

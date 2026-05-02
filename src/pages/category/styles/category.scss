@@ -134,4 +134,23 @@ page {
 		color: #bbb;
 		margin-top: auto;
 	}
+
+.opCart {
+  display: flex;
+  flex-direction: row;
+  height: 36rpx;
+  float: right;
+}
+
+  .product-control {
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+}
+
+.cont {
+  height: 36rpx;
+  width: 36rpx;
+  text-align: center;
+}
 }

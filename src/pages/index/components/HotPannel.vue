@@ -1,5 +1,14 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { SkuMode} from '@/enums/product'
 import type { ProductDetail } from '@/types/product'
+
+const skuPopRef = ref()
+
+const onOpenSkuPopup = (product: ProductDetail, popMod: SkuMode = SkuMode.Both) => {
+  // 调用子组件暴露的 openSkuPopup
+  skuPopRef.value.openSkuPopup(product, popMod)
+}
 
 defineProps<{
   list: ProductDetail[]
@@ -9,10 +18,11 @@ defineProps<{
 </script>
 
 <template>
+  <!-- SKU弹窗组件 -->
+  <PetSkuPopup ref="skuPopRef" />
   <view class="panel">
     <view class="title">
-      <text class="name">热门推荐</text>
-      <navigator class="more" hover-class="none">全部</navigator>
+      <text class="hot-name">热门推荐</text>
     </view>
     <view class="section">
       <navigator
@@ -21,13 +31,27 @@ defineProps<{
         class="product"
         open-type="navigate"
         hover-class="none"
-        :url="`pages/product/product?id=${product.id}`"
+        :url="`/pages/product/product?id=${product.id}`"
       >
         <image class="image" :src="product.picture"></image>
         <view class="name ellipsis">{{ product.name }}</view>
         <view class="price">
+          优惠价
           <text class="symbol">¥</text>
           <text class="number">{{ product.price }}</text>
+        </view>
+        <view class="price-and-cart">
+          <view class="odPrice">
+            <text class="symbol">¥</text>
+            <text class="number">{{ product.oldPrice }}</text>
+          </view>
+          <view class="opCart"  @click.stop="onOpenSkuPopup(product)">
+              <view class="product-control">
+                <view class="cont">
+                  <image src="/static/tabs/add-now.png" />
+                </view>
+              </view>
+          </view>
         </view>
       </navigator>
     </view>

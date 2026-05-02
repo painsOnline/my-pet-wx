@@ -1,4 +1,6 @@
 <template>
+  <!-- SKU弹窗组件 -->
+  <PetSkuPopup ref="skuPopRef" />
   <!-- 分类及商品列表 -->
   <view class="viewport">
     <!-- 自定义导航栏 -->
@@ -41,7 +43,13 @@
                   </view>
                   <view>
                     <text class="oldPrice">￥{{product.oldPrice}}</text>
-                    <cartcontrol :product="{...product.skus[0], count: 0}"></cartcontrol>
+                    <view class="opCart" @click.stop="onOpenSkuPopup(product)">
+                      <view class="product-control">
+                        <view class="cont">
+                          <image src="/static/tabs/add-now.png" />
+                        </view>
+                      </view>
+                    </view>
                   </view>
                 </view>
               </view>
@@ -63,7 +71,7 @@ import { onLoad, onShow, onHide, onReady, onUnload } from '@dcloudio/uni-app'
 import type { CategoryItem } from '@/types/category'
 import type { ProductDetail } from '@/types/product'
 import PetNavBar from '@/components/PetNavBar.vue';
-import cartcontrol from '@/components/CartControl.vue'
+import { SkuMode} from '@/enums/product'
 import { getCategoryListAPI, getProductsByCategoryIdAPI } from '@/services/category'
 
 // 获取分类列表数据
@@ -87,6 +95,14 @@ const isTriggered = ref(false)
 // 分页参数
 const page = ref(1)
 const pageSize = 5
+
+//sku弹窗
+const skuPopRef = ref()
+
+const onOpenSkuPopup = (product: ProductDetail, popMod: SkuMode = SkuMode.Both) => {
+  // 调用子组件暴露的 openSkuPopup
+  skuPopRef.value.openSkuPopup(product, popMod)
+}
 
 const getCategoryProductsData = async () => {
   if (isLoading.value) return
