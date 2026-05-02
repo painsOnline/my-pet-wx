@@ -1,7 +1,7 @@
 /** 通用的用户信息 */
 type BaseProfile = {
   /** 用户ID */
-  id: number
+  id: string
   /** 头像  */
   avatar: string
   /** 账户名（统一使用手机号）  */

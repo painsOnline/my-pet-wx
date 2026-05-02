@@ -3,6 +3,40 @@
   flex-direction: row;
   border-bottom: #c8c8c8 1rpx solid;
   padding: 20rpx 0;
+
+  .opCart {
+      display: flex;
+      flex-direction: row;
+      height: 36rpx;
+      float: right;
+    }
+
+    .product-control {
+      display: flex;
+      flex: 1;
+      justify-content: space-around;
+    }
+
+    .product-control img {
+      width: 36rpx;
+      height: 36rpx;
+    }
+
+    .cont {
+      width: 36rpx;
+      height: 36rpx;
+      text-align: center;
+    }
+
+    .buyNum {
+      margin: 0 10rpx;
+      width: 60rpx;
+      padding: 0 1rpx;
+      border: 1rpx solid #c8c7cc;
+      border-radius: 6rpx;
+      text-align: center;
+      vertical-align: middle;
+    }
 }
 
 .productItem .productImg {
@@ -161,7 +195,7 @@
 .cartList .title {
   background: #f3f5f7;
   justify-content: space-between;
-  padding: 4rpx 8rpx;
+  padding: 20rpx 10rpx;
 }
 
 .cartList .list-text {
@@ -193,4 +227,27 @@
 .clear {
   color: #c8c8c8;
   font-size: 24rpx;
+}
+
+/* 未登录禁用态 */
+.cartBottom.disabled {
+  background-color: #eee;
+
+  .priceBox,
+  .price {
+    color: #999;
+  }
+}
+
+.carIcon.disabled {
+  pointer-events: none;
+
+  .iconBox {
+    background-color: #ccc;
+  }
+}
+
+.goToBuy[disabled] {
+  background-color: #ccc;
+  color: #999;
 }

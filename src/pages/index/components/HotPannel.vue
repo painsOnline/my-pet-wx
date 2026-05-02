@@ -5,9 +5,16 @@ import type { ProductDetail } from '@/types/product'
 
 const skuPopRef = ref()
 
+const emit = defineEmits<{
+  'add-to-cart': [item: any]
+}>()
+
 const onOpenSkuPopup = (product: ProductDetail, popMod: SkuMode = SkuMode.Both) => {
-  // 调用子组件暴露的 openSkuPopup
   skuPopRef.value.openSkuPopup(product, popMod)
+}
+
+const onAddToCart = (cartItem: any) => {
+  emit('add-to-cart', cartItem)
 }
 
 defineProps<{
@@ -19,7 +26,7 @@ defineProps<{
 
 <template>
   <!-- SKU弹窗组件 -->
-  <PetSkuPopup ref="skuPopRef" />
+  <PetSkuPopup ref="skuPopRef" @add-to-cart="onAddToCart" />
   <view class="panel">
     <view class="title">
       <text class="hot-name">热门推荐</text>

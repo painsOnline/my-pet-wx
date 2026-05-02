@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import PetSkuPopup from '@/components/PetSkuPopup.vue'
-import { postMemberCartAPI } from '@/services/cart'
 import { getProductByIdAPI } from '@/services/product'
 import type { ProductDetail } from '@/types/product'
 import { SkuMode} from '@/enums/product'
@@ -44,10 +43,14 @@ const onTapImage = () => {
 }
 
 const skuPopRef = ref()
+const shopCartRef = ref()
 
 const onOpenSkuPopup = (product: ProductDetail, popMod: SkuMode = SkuMode.Both) => {
-  // 调用子组件暴露的 openSkuPopup
   skuPopRef.value.openSkuPopup(product, popMod)
+}
+
+const onAddToCart = (cartItem: any) => {
+  shopCartRef.value?.addCart(cartItem)
 }
 
 const selectArrText = computed(() => {
@@ -58,7 +61,7 @@ const selectArrText = computed(() => {
 
 <template>
   <!-- SKU弹窗组件 -->
-  <PetSkuPopup ref="skuPopRef" />
+  <PetSkuPopup ref="skuPopRef" @add-to-cart="onAddToCart" />
   <scroll-view enable-back-to-top scroll-y class="viewport">
     <!-- 基本信息 -->
     <view class="goods">

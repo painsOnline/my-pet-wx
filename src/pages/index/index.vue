@@ -11,10 +11,10 @@
     >
         <template>
           <MySwiper :list="bannerList"/>
-          <HotPannel :list="hotList" :is-loading="isLoadingMore" :is-finish="isFinish" />
+          <HotPannel :list="hotList" :is-loading="isLoadingMore" :is-finish="isFinish" @add-to-cart="onAddToCart" />
         </template>
     </scroll-view>
-    <PetShopCart/>
+    <PetShopCart ref="shopCartRef" />
   </view>
 </template>
 
@@ -66,6 +66,13 @@ onLoad(async () => {
   await Promise.all([getHomeBannerData(), getHomeHotData()])
   isLoading.value = false
 })
+
+// PetShopCart ref
+const shopCartRef = ref()
+
+const onAddToCart = (cartItem: any) => {
+  shopCartRef.value?.addCart(cartItem)
+}
 
 // 当前下拉刷新状态
 const isTriggered = ref(false)
