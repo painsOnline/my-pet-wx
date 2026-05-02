@@ -37,6 +37,13 @@
 			}
 		},
 		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
 			"path": "pages/product/product",
 			"style": {
 				"navigationBarTitleText": "商品详情",

@@ -81,33 +81,43 @@
         />
         <text>收货地址</text>
       </navigator>
-      <navigator
-        url="/pages/order?type=delivery"
-        open-type="navigate"
-        hover-class="none"
-        class="myOrderNavItem"
-      >
+      <view class="myOrderNavItem" @click="onLogout">
         <image
           src="/static/tabs/logout.png"
           mode="scaleToFill"
         />
         <text>退出登录</text>
-      </navigator>
+      </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import Vue from 'vue';
-import { ref } from 'vue';
-import { onLoad, onShow, onHide, onReady, onUnload } from '@dcloudio/uni-app'
+import { onShow } from '@dcloudio/uni-app'
 import PetNavBar from '@/components/PetNavBar.vue';
+import { useMemberStore } from '@/stores'
 
-onLoad(() => {})
-onReady(() => {})
-onShow(() => {})
-onHide(() => {})
-onUnload(() => {})
+onShow(() => {
+  const memberStore = useMemberStore()
+  if (!memberStore.profile?.token) {
+    uni.navigateTo({ url: '/pages/login/login' })
+  }
+})
+
+const onLogout = () => {
+  uni.showModal({
+    title: '提示',
+    content: '小主，您真的要退出么?',
+    success: (res) => {
+      if (res.confirm) {
+        const memberStore = useMemberStore()
+        memberStore.clearProfile()
+        uni.showToast({ icon: 'success', title: '退出成功' })
+        uni.reLaunch({ url: '/pages/index/index' })
+      }
+    },
+  })
+}
 </script>
 
 <style lang="scss">

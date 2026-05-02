@@ -23,6 +23,7 @@
 import { computed, ref } from 'vue'
 import { SkuMode} from '@/enums/product'
 import type { ProductDetail } from '@/types/product'
+import { useMemberStore } from '@/stores'
 
 // SKU组件实例
 const skuPopupRef = ref()
@@ -38,6 +39,11 @@ const mode = ref<SkuMode>(SkuMode.Cart)
 
 // 打开SKU弹窗修改按钮模式
 const openSkuPopup = (selectedPrduct: ProductDetail, btnMode: SkuMode = SkuMode.Both) => {
+  const memberStore = useMemberStore()
+  if (!memberStore.profile?.token) {
+    uni.navigateTo({ url: '/pages/login/login' })
+    return
+  }
   // SKU组件所需格式
   selectedProduct.value = {
     _id: selectedPrduct.id,
