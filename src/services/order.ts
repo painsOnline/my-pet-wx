@@ -3,6 +3,7 @@ import type { OrderDetail, OrderItem, OrderListParams, OrderPreResult, OrderCrea
 import type { AddressItem } from '../types/address'
 import { OrderState } from '../enums/order'
 import { mockDataResult } from '../utils/http'
+import { useCartStore } from '../stores/modules/cart'
 
 const productImages = ['/static/images/product-s1.png', '/static/images/product-s2.png', '/static/images/product-s3.png']
 
@@ -251,7 +252,41 @@ export const deleteMemberOrderAPI = async (id: string) => {
 
 export const getMemberOrderPreAPI = async () => {
   await delay()
-  const { products, summary } = createMockPreProducts()
+  // 从本地购物车中读取已选中的商品作为预订单数据源
+  const cartStore = useCartStore()
+  const cartItems = [...cartStore.getMemberLocalCart().values()].filter((v) => v.selected)
+
+  let products: OrderPreResult['products']
+  let summary: { totalPrice: number; postFee: number; totalPayPrice: number }
+
+  if (cartItems.length > 0) {
+    products = cartItems.map((item) => {
+      const totalPrice = +(item.price * item.count).toFixed(2)
+      const totalPayPrice = +(item.nowPrice * item.count).toFixed(2)
+      return {
+        id: item.id,
+        skuId: item.skuId,
+        name: item.name,
+        attrsText: item.attrsText,
+        count: item.count,
+        price: String(item.price),
+        payPrice: String(item.nowPrice),
+        picture: item.picture,
+        totalPrice: String(totalPrice),
+        totalPayPrice: String(totalPayPrice),
+      }
+    })
+    summary = {
+      totalPrice: +products.reduce((sum, p) => sum + Number(p.totalPrice), 0).toFixed(2),
+      postFee: 0,
+      totalPayPrice: +products.reduce((sum, p) => sum + Number(p.totalPayPrice), 0).toFixed(2),
+    }
+  } else {
+    const mock = createMockPreProducts()
+    products = mock.products
+    summary = mock.summary
+  }
+
   return mockDataResult<OrderPreResult>('200', 'success', {
     products,
     summary,

@@ -3,6 +3,13 @@
   flex-direction: row;
   border-bottom: #c8c8c8 1rpx solid;
   padding: 20rpx 0;
+  margin: 0 20rpx;
+
+  // 最后一个 productItem 样式
+  &:last-child {
+    border: none !important;
+    margin: 0 20rpx 40rpx 20rpx;
+  }
 
   .opCart {
       display: flex;
@@ -40,19 +47,19 @@
 }
 
 .productItem .productImg {
-  height: 90rpx;
-  width: 90rpx;
+  width: 120rpx;
+  height: 120rpx;
   margin: 10rpx 20rpx 0rpx 10rpx;
 }
 
 .productItem .productInfo {
   padding: 0 10rpx 0 0;
+  width: 78%;
 }
 
 .productInfo .productName {
-  font-size: 36rpx;
+  font-size: 26rpx;
   color: #000;
-  font-weight: 500;
   margin-bottom: 10rpx;
 }
 
@@ -67,7 +74,6 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 620rpx;
 }
 
 .productPrice {
@@ -75,12 +81,12 @@
 }
 
 .productPrice .nowPrice {
-  font-size: 28rpx;
+  font-size: 26rpx;
   color: #fe3d2d;
 }
 
 .productPrice .oldPrice {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #6a7076;
   text-decoration: line-through;
   margin-left: 20rpx;
@@ -195,7 +201,7 @@
 .cartList .title {
   background: #f3f5f7;
   justify-content: space-between;
-  padding: 20rpx 10rpx;
+  padding: 20rpx;
 }
 
 .cartList .list-text {

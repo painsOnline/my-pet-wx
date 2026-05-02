@@ -6,6 +6,7 @@ import {
   postMemberOrderAPI,
 } from '@/services/order'
 import { useAddressStore } from '@/stores/modules/address'
+import { useCartStore } from '@/stores'
 import type { OrderPreResult } from '@/types/order'
 import { onLoad } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
@@ -80,6 +81,9 @@ const onOrderSubmit = async () => {
     payChannel: 1,
     payType: 1,
   })
+  // 清空购物车
+  const cartStore = useCartStore()
+  cartStore.clearMemberLocalCart()
   // 关闭当前页面，跳转到订单详情，传递订单id
   uni.redirectTo({ url: `/pagesOrder/detail/detail?id=${res.result.id}` })
 }

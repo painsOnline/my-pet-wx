@@ -4,9 +4,10 @@ import type { CartItem } from '@/types/cart'
 import { getMemberCartAPI, resetMemberCartAPI } from '@/services/cart'
 import { useMemberStore, useCartStore } from '@/stores'
 
-defineProps<{
+const props = defineProps<{
   buyType?: string
   buyDis?: boolean
+  hideOnMask?: boolean
 }>()
 
 const memberStore = useMemberStore()
@@ -17,6 +18,25 @@ const isLoggedIn = computed(() => !!memberStore.profile?.token)
 
 // 购物车展示
 const isShowList = ref(false)
+const isVisible = ref(true)
+
+const toggleVisible = () => {
+  isVisible.value = !isVisible.value
+  if (isVisible.value) {
+    isShowList.value = true
+  } else {
+    isShowList.value = false
+  }
+}
+
+const onMaskClick = () => {
+  if (props.hideOnMask) {
+    isVisible.value = false
+    isShowList.value = false
+  } else {
+    isShowList.value = false
+  }
+}
 
 // 浮点数运算
 const accMul = (arg1: number, arg2: number): number => {
@@ -122,23 +142,35 @@ const toggleList = () => {
   if (productList.value.length) {
     isShowList.value = !isShowList.value
   }
+  if (isShowList.value) {
+    isVisible.value = true
+  }
 }
 
-const buyList = () => {
+const buyList = async () => {
   if (!isLoggedIn.value) return
-  if (getSelection.value.length) {
-    uni.showToast({ title: '总价格：' + getAllPrice.value })
+  if (!getSelection.value.length) {
+    uni.showToast({ icon: 'none', title: '请选择商品' })
+    return
   }
+  await resetMemberCartAPI([...cartStore.getMemberLocalCart().values()])
+  uni.navigateTo({ url: '/pagesOrder/create/create' })
 }
 
 const addCart = (item: CartItem) => {
-  const newCount = item.count + 1
-  if (newCount > item.stock) {
-    uni.showToast({ title: '该宝贝不能购买超过库存数量奥~' })
-    return
+  const existing = cartStore.getMemberLocalCart().get(item.skuId)
+  if (existing) {
+    const newCount = existing.count + 1
+    if (newCount > existing.stock) {
+      uni.showToast({ title: '该宝贝不能购买超过库存数量奥~' })
+      return
+    }
+    existing.count = newCount
+    cartStore.modifyMemberLocalCart(existing)
+  } else {
+    item.count = 1
+    cartStore.modifyMemberLocalCart(item)
   }
-  item.count = newCount
-  cartStore.modifyMemberLocalCart(item)
   refreshList()
 }
 
@@ -173,11 +205,11 @@ const clearCart = () => {
   refreshList()
 }
 
-defineExpose({ addCart })
+defineExpose({ addCart, toggleVisible })
 </script>
 
 <template>
-  <view class="shopcart">
+  <view class="shopcart" v-show="isVisible">
     <view class="cartBottom" :class="{ disabled: !isLoggedIn }">
       <view class="carIcon" :class="{ disabled: !isLoggedIn }" @click="toggleList">
         <view class="iconBox" :class="{ active: getAllCount, disabled: !isLoggedIn }">
@@ -238,7 +270,7 @@ defineExpose({ addCart })
         </view>
       </scroll-view>
     </view>
-    <view class="listMask" v-show="isLoggedIn && isShowList && productList.length" @click="toggleList" />
+    <view class="listMask" v-show="isLoggedIn && isShowList && productList.length" @click="onMaskClick" />
   </view>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <!-- SKU弹窗组件 -->
-  <PetSkuPopup ref="skuPopRef" />
+  <PetSkuPopup ref="skuPopRef" @add-to-cart="onAddToCart" />
   <!-- 分类及商品列表 -->
   <view class="viewport">
     <!-- 自定义导航栏 -->
@@ -61,7 +61,7 @@
         </view>
       </scroll-view>
     </view>
-  <PetShopCart/>
+  <PetShopCart ref="shopCartRef" />
   </view>
 </template>
 
@@ -98,10 +98,14 @@ const pageSize = 5
 
 //sku弹窗
 const skuPopRef = ref()
+const shopCartRef = ref()
 
 const onOpenSkuPopup = (product: ProductDetail, popMod: SkuMode = SkuMode.Both) => {
-  // 调用子组件暴露的 openSkuPopup
   skuPopRef.value.openSkuPopup(product, popMod)
+}
+
+const onAddToCart = (cartItem: any) => {
+  shopCartRef.value?.addCart(cartItem)
 }
 
 const getCategoryProductsData = async () => {

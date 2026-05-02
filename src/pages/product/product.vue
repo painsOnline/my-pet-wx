@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import PetSkuPopup from '@/components/PetSkuPopup.vue'
 import { getProductByIdAPI } from '@/services/product'
@@ -22,8 +22,10 @@ const getProductByIdData = async () => {
 }
 
 // 页面加载
-onLoad(() => {
+onLoad(async () => {
   getProductByIdData()
+  await nextTick()
+  shopCartRef.value?.toggleVisible()
 })
 
 // 轮播图变化时
@@ -51,6 +53,10 @@ const onOpenSkuPopup = (product: ProductDetail, popMod: SkuMode = SkuMode.Both) 
 
 const onAddToCart = (cartItem: any) => {
   shopCartRef.value?.addCart(cartItem)
+}
+
+const toggleCartVisible = () => {
+  shopCartRef.value?.toggleVisible()
 }
 
 const selectArrText = computed(() => {
@@ -127,15 +133,17 @@ const selectArrText = computed(() => {
   <view v-if="product" class="toolbar" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
     <view class="icons">
       <button class="icons-button"><text class="icon-heart"></text>收藏</button>
-      <navigator class="icons-button" url="/pages/cart/cart2" open-type="navigate">
-        <text class="icon-cart"></text>购物车
-      </navigator>
+      <view class="icons-button" @click="toggleCartVisible">
+        <text class="icon-cart">
+        </text>购物车
+      </view>
     </view>
     <view class="buttons">
       <view @tap="onOpenSkuPopup(product, SkuMode.Cart)" class="addcart"> 加入购物车 </view>
       <view @tap="onOpenSkuPopup(product, SkuMode.Buy)" class="payment"> 立即购买 </view>
     </view>
   </view>
+  <PetShopCart ref="shopCartRef" hideOnMask />
 </template>
 
 <style lang="scss">
